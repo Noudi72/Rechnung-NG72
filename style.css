@@ -1,0 +1,69 @@
+body {
+    font-family: 'Avenir', Arial, sans-serif;
+    background: #f8f9fa;
+    color: #22223b;
+    margin: 0;
+}
+header {
+    background: #22223b;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 24px;
+}
+header img {
+    border-radius: 12px;
+}
+main {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+    padding: 24px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+section {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 12px #0001;
+    padding: 24px;
+    margin-bottom: 24px;
+}
+section h2 {
+    margin-top: 0;
+}
+input, textarea, select, button {
+    font-family: inherit;
+    font-size: 1rem;
+    margin: 4px 0 12px 0;
+    padding: 8px 12px;
+    border-radius: 6px;
+    border: 1px solid #d3d3d3;
+}
+button {
+    background: #22223b;
+    color: #fff;
+    border: none;
+    padding: 10px 16px;
+    cursor: pointer;
+    border-radius: 8px;
+    margin-right: 8px;
+}
+button:hover {
+    background: #4a4e69;
+}
+label {
+    display: block;
+    margin-top: 12px;
+}
+#positionen > div {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+@media (max-width: 900px) {
+    main {
+        grid-template-columns: 1fr;
+    }
+}
