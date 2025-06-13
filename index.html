@@ -1,54 +1,66 @@
 <!DOCTYPE html>
 <html lang="de">
 <head>
-    <meta charset="UTF-8">
-    <title>Rechnung Generator</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="style.css">
-    <meta name="theme-color" content="#22223b">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <meta charset="UTF-8" />
+  <title>Rechnung Generator NG72</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@picocss/pico@2.0.6/css/pico.min.css" />
+  <style>
+    body { font-family: Avenir, Arial, sans-serif; }
+    .flex { display: flex; gap: 2em; align-items: flex-start; }
+    .flex > section { flex: 1; min-width: 320px; }
+    #logoimg { width: 80px; margin-bottom: 1em; }
+    .pos-tbl { width: 100%; margin-bottom: 1em; }
+    .pos-tbl th, .pos-tbl td { text-align: left; }
+    .center { text-align: center; }
+    .right { text-align: right; }
+    .fuss { font-size: 0.9em; margin-top: 2em; }
+    @media (max-width: 900px) { .flex { flex-direction: column; } }
+  </style>
 </head>
 <body>
-    <header>
-        <img id="logo" src="logo.png" alt="Logo" height="60">
-        <h1>Rechnung Generator</h1>
-    </header>
-    <main>
-        <section id="kunden">
-            <h2>Kunden</h2>
-            <textarea id="kundenName" rows="4" placeholder="Kundenadresse (mehrzeilig)..."></textarea>
-            <button id="neuerKundeBtn">Kunde speichern</button>
-            <ul id="kundenListe"></ul>
-        </section>
-        <section id="artikel">
-            <h2>Artikel</h2>
-            <input id="artikelName" placeholder="Bezeichnung">
-            <input id="artikelPreis" type="number" step="0.05" placeholder="Preis (CHF)">
-            <button id="neuerArtikelBtn">Artikel speichern</button>
-            <ul id="artikelListe"></ul>
-        </section>
-        <section id="rechnung">
-            <h2>Rechnung erstellen</h2>
-            <label>Empfänger:
-                <select id="empfaenger"></select>
-            </label>
-            <label>Positionen:
-                <select id="positionsArtikel"></select>
-                <input id="positionsMenge" type="number" min="1" value="1" style="width:40px;">
-                <button id="neuePositionBtn">+ Position</button>
-                <ul id="positionenListe"></ul>
-            </label>
-            <label>Fusszeile:
-                <input id="fusszeile" value="Zahlbar innert 30 Tagen. Kein MWST-Ausweis, da nicht mehrwertsteuerpflichtig gemäss Art. 10 MWSTG. Vielen Dank für Ihr Vertrauen! Kontakt: n.guyaz@icloud.com / +41 79 414 42 049">
-            </label>
-            <button id="pdfBtn">PDF erstellen & herunterladen</button>
-        </section>
-        <section id="vorschau">
-            <h2>Vorschau</h2>
-            <button id="pdfVorschauBtn">Vorschau im neuen Tab</button>
-        </section>
-    </main>
-    <script src="app.js"></script>
+  <main class="container">
+    <h1><img id="logoimg" src="logo.png" alt="Logo" /> Rechnung Generator</h1>
+    <div class="flex">
+      <section>
+        <h3>Kunden</h3>
+        <textarea id="kunde_input" placeholder="Kundenadresse mehrzeilig..."></textarea>
+        <button id="kunde_save">Kunde speichern</button>
+        <ul id="kunden_list"></ul>
+      </section>
+      <section>
+        <h3>Artikel</h3>
+        <input id="art_name" placeholder="Bezeichnung" />
+        <input id="art_preis" type="number" step="0.01" placeholder="Preis CHF" />
+        <button id="art_save">Artikel speichern</button>
+        <ul id="artikel_list"></ul>
+      </section>
+    </div>
+
+    <h2>Rechnung erstellen</h2>
+    <form id="rechnung_form" autocomplete="off" onsubmit="return false;">
+      <label>Empfänger:
+        <select id="empfaenger"></select>
+      </label>
+      <div id="pos_area"></div>
+      <button type="button" id="add_pos">+ Position</button>
+      <label>Rechnungsnummer:
+        <input id="rechnr" />
+      </label>
+      <label>Zahlungsfrist:
+        <select id="frist">
+          <option value="7">7 Tage</option>
+          <option value="14">14 Tage</option>
+          <option value="30" selected>30 Tage</option>
+        </select>
+      </label>
+      <label>Fusszeile:
+        <input id="fusszeile" />
+      </label>
+      <button type="button" id="makepdf">PDF erstellen & herunterladen</button>
+    </form>
+    <p id="status"></p>
+  </main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
