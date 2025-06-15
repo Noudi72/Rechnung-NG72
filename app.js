@@ -319,7 +319,7 @@ $("#makepdf")?.addEventListener("click", async () => {
   doc.text(fuss, 16, fussY, { maxWidth: 175 });
 
   // 10. QR-Zahlteil GANZ UNTEN, volle Breite und mehr Höhe (Beispiel: 210mm x 100mm)
-  await addImageToPDF(doc, 'zahlteilimg', 1, 200, 206, 93);
+  await addImageToPDF(doc, 'zahlteilimg', 1, 200, 209, 93);
 
   doc.save(`Rechnung-${rechnr}.pdf`);
   $("#status").textContent = "PDF erstellt!";
