@@ -300,7 +300,7 @@ $("#makepdf")?.addEventListener("click", async () => {
   let total = 0;
   pos.forEach(p => {
     doc.text(p.name, 16, row_y);
-    doc.text(String(p.menge), 102, row_y, { align: "right" });
+    doc.text(String(p.menge), 105, row_y, { align: "right" });
     doc.text(Number(p.preis).toFixed(2) + " CHF", 198, row_y, { align: "right" });
     row_y += 7;
     total += Number(p.preis) * Number(p.menge);
