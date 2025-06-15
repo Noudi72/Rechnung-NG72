@@ -314,12 +314,12 @@ $("#makepdf")?.addEventListener("click", async () => {
   doc.text(total.toFixed(2) + " CHF", 198, row_y, { align: "right" });
 
   // 9. Fusszeile – deutlich höher für Zahlteil
-  let fussY = 195;
+  let fussY = 190;
   doc.setFont("helvetica", "normal").setFontSize(10);
   doc.text(fuss, 16, fussY, { maxWidth: 175 });
 
   // 10. QR-Zahlteil GANZ UNTEN, volle Breite und mehr Höhe (Beispiel: 210mm x 100mm)
-  await addImageToPDF(doc, 'zahlteilimg', 0, 197, 210, 93);
+  await addImageToPDF(doc, 'zahlteilimg', 0, 197, 208, 93);
 
   doc.save(`Rechnung-${rechnr}.pdf`);
   $("#status").textContent = "PDF erstellt!";
