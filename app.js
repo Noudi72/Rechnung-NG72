@@ -247,10 +247,10 @@ $("#makepdf")?.addEventListener("click", async () => {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
 
   // 1. Logo und Adresse
-  await addImageToPDF(doc, 'logoimg', 16, 12, 36, 36);
+  await addImageToPDF(doc, 'logoimg', 16, 10, 36, 36);
   // Adresse unter Logo, Zeilenabstand 6, x=16, y=54
   doc.setFontSize(11).setFont("helvetica", "normal");
-  let adr_x = 16, adr_y = 51, adr_ls = 6;
+  let adr_x = 16, adr_y = 49, adr_ls = 6;
   doc.text("Noël Guyaz", adr_x, adr_y);
   doc.text("Bellacherstrasse 4a", adr_x, adr_y + adr_ls);
   doc.text("2545 Selzach", adr_x, adr_y + 2 * adr_ls);
@@ -308,10 +308,10 @@ $("#makepdf")?.addEventListener("click", async () => {
 
   // 7. Fusszeile
   doc.setFont("helvetica", "normal").setFontSize(10);
-  doc.text(fuss, 16, 240, { maxWidth: 175 });
+  doc.text(fuss, 16, 245, { maxWidth: 175 });
 
   // 8. QR-Zahlteil (PNG)
-  await addImageToPDF(doc, 'zahlteilimg', 10, 250, 190, 35);
+  await addImageToPDF(doc, 'zahlteilimg', 10, 256, 190, 33);
 
   doc.save(`Rechnung-${rechnr}.pdf`);
   $("#status").textContent = "PDF erstellt!";
