@@ -248,21 +248,26 @@ $("#makepdf")?.addEventListener("click", async () => {
 
   // 1. Logo und Adresse
   await addImageToPDF(doc, 'logoimg', 16, 12, 28, 28); // Logo schön hoch
-  let adr_x = 16, adr_y = 49, adr_ls = 6;
+  let adr_x = 16, adr_y = 42, adr_ls = 6;
   doc.setFontSize(11).setFont("helvetica", "normal");
   doc.text("Noël Guyaz", adr_x, adr_y);
   doc.text("Bellacherstrasse 4a", adr_x, adr_y + adr_ls);
   doc.text("2545 Selzach", adr_x, adr_y + 2 * adr_ls);
 
   // 2. Absender (klein, unterstrichen, rechts oben)
-  doc.setFontSize(8).setFont("helvetica", "italic");
-  doc.text("Abs. Noël Guyaz, Bellacherstrasse 4a, 2545 Selzach", 110, 41);
-  doc.setLineWidth(0.2);
-  doc.line(110, 42.2, 200, 42.2);
+ const absText = "Abs. Noël Guyaz, Bellacherstrasse 4a, 2545 Selzach";
+doc.setFontSize(8).setFont("helvetica", "italic");
+const abs_x = 110, abs_y = 46;
+
+doc.text(absText, abs_x, abs_y);
+
+const absWidth = doc.getTextWidth(absText);
+doc.setLineWidth(0.2);
+doc.line(abs_x, abs_y + 1.2, abs_x + absWidth, abs_y + 1.2);
 
   // 3. Empfänger-Block (mehrzeilig, neutral)
   let empf = empfaenger.split("\n");
-  let empf_x = 110, empf_y = 47, empf_ls = 6;
+  let empf_x = 110, empf_y = 54, empf_ls = 6;
   doc.setFont("helvetica", "normal").setFontSize(11);
   empf.forEach((l, i) => doc.text(l, empf_x, empf_y + i * empf_ls));
   let empf_block_end_y = empf_y + empf_ls * empf.length;
@@ -303,7 +308,7 @@ $("#makepdf")?.addEventListener("click", async () => {
   // Total-Block darunter
   row_y += 2;
   doc.setFont("helvetica", "bold");
-  doc.text("Total:", 98, row_y, { align: "right" });
+  doc.text("Total:", 98, row_y);
   doc.text(total.toFixed(2) + " CHF", 198, row_y, { align: "right" });
 
   // 7. Fusszeile – garantiert hoch genug!
