@@ -257,7 +257,7 @@ $("#makepdf")?.addEventListener("click", async () => {
   // 2. Absender (klein, unterstrichen, rechts oben)
  const absText = "Abs. Noël Guyaz, Bellacherstrasse 4a, 2545 Selzach";
 doc.setFontSize(8).setFont("helvetica", "italic");
-const abs_x = 110, abs_y = 46;
+const abs_x = 110, abs_y = 55;
 
 doc.text(absText, abs_x, abs_y);
 
