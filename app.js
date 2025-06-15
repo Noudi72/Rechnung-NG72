@@ -246,45 +246,46 @@ $("#makepdf")?.addEventListener("click", async () => {
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF({ unit: "mm", format: "a4" });
 
-  // 1. Logo und Adresse
-  await addImageToPDF(doc, 'logoimg', 16, 12, 28, 28); // Logo schön hoch
-let adr_x = 16, adr_y = empf_y; // Adresse beginnt gleich wie Empfänger!
-let adr_ls = 6;
-doc.setFontSize(11).setFont("helvetica", "normal");
-doc.text("Noël Guyaz", adr_x, adr_y);
-doc.text("Bellacherstrasse 4a", adr_x, adr_y + adr_ls);
-doc.text("2545 Selzach", adr_x, adr_y + 2 * adr_ls);
+  // 1. Logo oben links
+  await addImageToPDF(doc, 'logoimg', 16, 12, 28, 28);
 
-  // 2. Absender (klein, unterstrichen, rechts oben)
- const absText = "Abs. Noël Guyaz, Bellacherstrasse 4a, 2545 Selzach";
-doc.setFontSize(8).setFont("helvetica", "italic");
-const abs_x = 110, abs_y = 56;
-
-doc.text(absText, abs_x, abs_y);
-
-const absWidth = doc.getTextWidth(absText);
-doc.setLineWidth(0.2);
-doc.line(abs_x, abs_y + 1.2, abs_x + absWidth, abs_y + 1.2);
-
-  // 3. Empfänger-Block (mehrzeilig, neutral)
-  let empf = empfaenger.split("\n");
+  // 2. Positionen für Empfänger und Adresse zuerst deklarieren!
   let empf_x = 110, empf_y = 58, empf_ls = 6;
+  let adr_x = 16, adr_y = empf_y, adr_ls = 6;
+
+  // 3. Adresse links, beginnend auf selber Höhe wie Empfänger
+  doc.setFontSize(11).setFont("helvetica", "normal");
+  doc.text("Noël Guyaz", adr_x, adr_y);
+  doc.text("Bellacherstrasse 4a", adr_x, adr_y + adr_ls);
+  doc.text("2545 Selzach", adr_x, adr_y + 2 * adr_ls);
+
+  // 4. Absender oben rechts, unterstrichen
+  const absText = "Abs. Noël Guyaz, Bellacherstrasse 4a, 2545 Selzach";
+  doc.setFontSize(8).setFont("helvetica", "italic");
+  const abs_x = 110, abs_y = 50;
+  doc.text(absText, abs_x, abs_y);
+  const absWidth = doc.getTextWidth(absText);
+  doc.setLineWidth(0.2);
+  doc.line(abs_x, abs_y + 1.2, abs_x + absWidth, abs_y + 1.2);
+
+  // 5. Empfängerblock (mehrzeilig, neutral)
+  let empf = empfaenger.split("\n");
   doc.setFont("helvetica", "normal").setFontSize(11);
   empf.forEach((l, i) => doc.text(l, empf_x, empf_y + i * empf_ls));
   let empf_block_end_y = empf_y + empf_ls * empf.length;
 
-  // 4. Titel "Rechnung"
+  // 6. Titel "Rechnung"
   let titel_y = empf_block_end_y + 15;
   doc.setFont("helvetica", "bold").setFontSize(22);
   doc.text("Rechnung", 16, titel_y);
 
-  // 5. Rechnungsnummer & Frist
+  // 7. Rechnungsnummer & Frist
   let fristen_y = titel_y + 13;
   doc.setFont("helvetica", "normal").setFontSize(13);
   doc.text(`Rechnungsnummer: ${rechnr}`, 16, fristen_y);
   doc.text(`Zahlungsfrist: ${frist} Tage`, 16, fristen_y + 8);
 
-  // 6. Tabelle mit mehr Abstand nach unten
+  // 8. Tabelle
   let tab_y = fristen_y + 18;
   doc.setFont("helvetica", "bold").setFontSize(13);
   doc.text("Beschreibung", 16, tab_y);
@@ -304,22 +305,22 @@ doc.line(abs_x, abs_y + 1.2, abs_x + absWidth, abs_y + 1.2);
     row_y += 7;
     total += Number(p.preis) * Number(p.menge);
   });
-  // Tabellenlinie UNTER den Positionen, aber NICHT ins Total!
+  // Tabellenlinie unter den Positionen, aber NICHT ins Total!
   doc.line(16, row_y - 3, 200, row_y - 3);
   // Total-Block darunter
   row_y += 2;
   doc.setFont("helvetica", "bold");
-  doc.text("Total:", 98, row_y);
+  doc.text("Total:", 98, row_y); // jetzt linksbündig unter "Menge"
   doc.text(total.toFixed(2) + " CHF", 198, row_y, { align: "right" });
 
-  // 7. Fusszeile – garantiert hoch genug!
+  // 9. Fusszeile – deutlich höher für Zahlteil
   let fussY = 220;
   doc.setFont("helvetica", "normal").setFontSize(10);
   doc.text(fuss, 16, fussY, { maxWidth: 175 });
 
-  // 8. QR-Zahlteil (PNG) GANZ UNTEN – Höhe max. 32mm
-  await addImageToPDF(doc, 'zahlteilimg', 10, 230, 210, 100)
-  
+  // 10. QR-Zahlteil GANZ UNTEN, volle Breite und mehr Höhe (Beispiel: 210mm x 100mm)
+  await addImageToPDF(doc, 'zahlteilimg', 0, 230, 210, 100);
+
   doc.save(`Rechnung-${rechnr}.pdf`);
   $("#status").textContent = "PDF erstellt!";
 });
