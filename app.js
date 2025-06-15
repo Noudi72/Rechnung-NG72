@@ -247,7 +247,7 @@ $("#makepdf")?.addEventListener("click", async () => {
   const doc = new jsPDF({ unit: "mm", format: "a4" });
 
   // 1. Logo und Adresse
-  await addImageToPDF(doc, 'logoimg', 16, 10, 36, 36); // Logo schön hoch
+  await addImageToPDF(doc, 'logoimg', 16, 12, 28, 28); // Logo schön hoch
   let adr_x = 16, adr_y = 49, adr_ls = 6;
   doc.setFontSize(11).setFont("helvetica", "normal");
   doc.text("Noël Guyaz", adr_x, adr_y);
