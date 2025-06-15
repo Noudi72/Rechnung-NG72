@@ -14,10 +14,19 @@
     .container {
       max-width: 950px;
       margin: 30px auto 30px auto;
-      padding: 30px 20px 20px 20px;
+      padding: 32px 28px 22px 28px;
       background: #fff;
       border-radius: 16px;
       box-shadow: 0 4px 16px #0001;
+    }
+    .topbar {
+      display:flex; align-items:flex-start; gap:18px; margin-bottom:16px;
+    }
+    .topbar img {
+      width:72px; height:auto; border-radius:8px; box-shadow:0 2px 8px #0002;
+    }
+    .topbar .absender {
+      margin-top:6px; line-height:1.25;
     }
     h1 {
       font-size: 2.2em;
@@ -57,12 +66,43 @@
     @media (max-width: 800px) {
       .row { flex-direction: column; gap: 0; }
     }
+    #kunden_list, #artikel_list {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      background: #fafbfc;
+    }
+    #kunden_list li, #artikel_list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    #kunden_list button, #artikel_list button {
+      background: none;
+      border: none;
+      padding: 0;
+      margin-left: 6px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    #kunden_list button:hover, #artikel_list button:hover {
+      filter: brightness(0.8);
+    }
   </style>
 </head>
 <body>
   <div class="container">
+    <div class="topbar">
+      <img src="logo.png" alt="Logo NG72">
+      <div class="absender">
+        <strong>Noël Guyaz</strong><br>
+        Bellacherstrasse 4a<br>
+        2545 Selzach
+      </div>
+    </div>
     <h1>Rechnung erstellen</h1>
-
     <div class="row">
       <div class="col">
         <h2>Kunden</h2>
@@ -119,6 +159,9 @@
     <button id="makepdf" style="margin-top:18px;font-size:1.14em;">PDF erstellen &amp; herunterladen</button>
     <span id="status"></span>
   </div>
+  <!-- Unsichtbare Bilder für PDF-Export -->
+  <img id="logoimg" src="logo.png" style="display:none;">
+  <img id="zahlteilimg" src="BLB EZS.png" style="display:none;">
   <script src="app.js"></script>
 </body>
 </html>
