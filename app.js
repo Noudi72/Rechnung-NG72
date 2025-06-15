@@ -308,10 +308,10 @@ $("#makepdf")?.addEventListener("click", async () => {
 
   // 7. Fusszeile
   doc.setFont("helvetica", "normal").setFontSize(10);
-  doc.text(fuss, 16, 245, { maxWidth: 175 });
+  doc.text(fuss, 16, 320, { maxWidth: 175 });
 
   // 8. QR-Zahlteil (PNG)
-  await addImageToPDF(doc, 'zahlteilimg', 10, 256, 190, 33);
+  await addImageToPDF(doc, 'zahlteilimg', 10, 300, 190, 33);
 
   doc.save(`Rechnung-${rechnr}.pdf`);
   $("#status").textContent = "PDF erstellt!";
