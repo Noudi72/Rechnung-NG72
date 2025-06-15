@@ -276,7 +276,7 @@ $("#makepdf")?.addEventListener("click", async () => {
 
   // 6. Titel "Rechnung"
   let titel_y = empf_block_end_y + 15;
-  doc.setFont("helvetica", "bold").setFontSize(22);
+  doc.setFont("helvetica", "bold").setFontSize(18);
   doc.text("Rechnung", 16, titel_y);
 
   // 7. Rechnungsnummer & Frist
@@ -319,7 +319,7 @@ $("#makepdf")?.addEventListener("click", async () => {
   doc.text(fuss, 16, fussY, { maxWidth: 175 });
 
   // 10. QR-Zahlteil GANZ UNTEN, volle Breite und mehr Höhe (Beispiel: 210mm x 100mm)
-  await addImageToPDF(doc, 'zahlteilimg', 2, 197, 208, 93);
+  await addImageToPDF(doc, 'zahlteilimg', 4, 197, 208, 93);
 
   doc.save(`Rechnung-${rechnr}.pdf`);
   $("#status").textContent = "PDF erstellt!";
