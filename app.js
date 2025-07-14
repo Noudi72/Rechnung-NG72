@@ -1,35 +1,7 @@
-// === Styles für Listen und Rahmen (wird in HTML geladen, falls nicht bereits eingebunden)
-const style = document.createElement('style');
-style.innerHTML = `
-#kunden_list, #artikel_list {
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  padding: 8px 12px;
-  margin-bottom: 16px;
-  background: #fafbfc;
-}
-#kunden_list li, #artikel_list li {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 4px;
-}
-#kunden_list button, #artikel_list button {
-  background: none;
-  border: none;
-  padding: 0;
-  margin-left: 6px;
-  cursor: pointer;
-  font-size: 18px;
-}
-#kunden_list button:hover, #artikel_list button:hover {
-  filter: brightness(0.8);
-}
-`;
-document.head.appendChild(style);
 // === Button: Neue Rechnung starten einfügen
 const neuerBtn = document.createElement("button");
 neuerBtn.textContent = "Neue Rechnung starten";
+neuerBtn.type = "button";
 neuerBtn.style = "margin-left:12px;background:#555;";
 neuerBtn.onclick = () => {
   positionen = [];
@@ -53,6 +25,7 @@ setTimeout(() => {
 const backupBtn = document.createElement("button");
 backupBtn.textContent = "Backup erstellen";
 backupBtn.style = "margin-left:12px;background:#1b5e20;";
+backupBtn.type = "button";
 backupBtn.onclick = () => {
   const data = {
     kunden,
@@ -108,6 +81,7 @@ restoreInput.addEventListener("change", e => {
 document.body.appendChild(restoreInput);
 
 const restoreBtn = document.createElement("button");
+restoreBtn.type = "button";
 restoreBtn.textContent = "Backup importieren";
 restoreBtn.style = "margin-left:12px;background:#9c27b0;";
 restoreBtn.onclick = () => restoreInput.click();
@@ -121,6 +95,7 @@ setTimeout(() => {
 
 // === Button: PDF Vorschau anzeigen einfügen
 const vorschauBtn = document.createElement("button");
+vorschauBtn.type = "button";
 vorschauBtn.textContent = "PDF Vorschau anzeigen";
 vorschauBtn.style = "margin-left:12px;background:#006fb9;";
 vorschauBtn.onclick = async () => {
@@ -226,9 +201,11 @@ function renderKunden() {
       let editBtn = document.createElement("button");
       editBtn.textContent = "✏️";
       editBtn.title = "Bearbeiten";
+      editBtn.type = "button";
       editBtn.onclick = () => showEdit();
       let delBtn = document.createElement("button");
       delBtn.textContent = "🗑";
+      delBtn.type = "button";
       delBtn.title = "Löschen";
       delBtn.onclick = () => { kunden.splice(i, 1); saveKunden(kunden); renderKunden(); renderEmpfaenger(); }
       li.append(editBtn, delBtn);
@@ -242,6 +219,7 @@ function renderKunden() {
       ta.style.width = "220px";
       let saveBtn = document.createElement("button");
       saveBtn.textContent = "💾";
+      saveBtn.type = "button";
       saveBtn.title = "Speichern";
       saveBtn.onclick = () => {
         kunden[i] = ta.value;
@@ -279,9 +257,11 @@ function renderArtikel() {
       let editBtn = document.createElement("button");
       editBtn.textContent = "✏️";
       editBtn.title = "Bearbeiten";
+      editBtn.type = "button";
       editBtn.onclick = () => showEdit();
       let delBtn = document.createElement("button");
       delBtn.textContent = "🗑";
+      delBtn.type = "button";
       delBtn.title = "Löschen";
       delBtn.onclick = () => { artikel.splice(i, 1); saveArtikel(artikel); renderArtikel(); renderArtikelDropdown(); }
       li.append(editBtn, delBtn);
@@ -299,6 +279,7 @@ function renderArtikel() {
       preisInput.style.width = "70px";
       let saveBtn = document.createElement("button");
       saveBtn.textContent = "💾";
+      saveBtn.type = "button";
       saveBtn.title = "Speichern";
       saveBtn.onclick = () => {
         a.name = nameInput.value.trim();
