@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Rechnung NG72 Generator</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="qrcode.min.js"></script>
+  <style>
+    body {
+      font-family: 'Segoe UI', Arial, sans-serif;
+      background: #fafbfc;
+      margin: 0; padding: 0;
+    }
+    .container {
+      max-width: 950px;
+      margin: 30px auto 30px auto;
+      padding: 32px 28px 22px 28px;
+      background: #fff;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px #0001;
+    }
+    .topbar {
+      display:flex; align-items:flex-start; gap:18px; margin-bottom:16px;
+    }
+    .topbar img {
+      width:72px; height:auto; border-radius:8px; box-shadow:0 2px 8px #0002;
+    }
+    .topbar .absender {
+      margin-top:6px; line-height:1.25;
+    }
+    h1 {
+      font-size: 2.2em;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    label { font-weight: 500; display: block; margin: 12px 0 4px 0; }
+    textarea, select, input[type="text"], input[type="number"] {
+      width: 100%; font-size: 1em; border: 1px solid #bbb; border-radius: 5px; padding: 7px 8px; margin-bottom: 10px;
+      box-sizing: border-box;
+      background: #f8f9fa;
+    }
+    .row { display: flex; gap: 24px; }
+    .col { flex: 1 1 0; min-width: 0; }
+    button {
+      background: #950019; color: #fff; border: none; border-radius: 7px; padding: 9px 18px;
+      font-size: 1.09em; font-weight: 600; margin-top: 5px; margin-bottom: 15px; cursor: pointer;
+      transition: background .2s;
+    }
+    button:hover { background: #c7002d; }
+    ul { padding-left: 18px; margin-bottom: 0; }
+    li { margin-bottom: 3px; }
+    table.tbl {
+      width: 100%; border-collapse: collapse; margin-bottom: 15px;
+    }
+    .tbl th, .tbl td {
+      padding: 6px 7px;
+      border-bottom: 1px solid #ddd;
+      font-size: 1em;
+    }
+    .tbl th {
+      background: #f2f2f4; font-weight: 700; border-bottom: 2px solid #b7b7b7;
+    }
+    .tbl td.center, .tbl th.center { text-align: center; }
+    .tbl td.right, .tbl th.right { text-align: right; }
+    #status { font-size: 1em; color: #008a1a; font-weight: 500; margin-top: 10px; }
+    @media (max-width: 800px) {
+      .row { flex-direction: column; gap: 0; }
+    }
+    #kunden_list, #artikel_list {
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      padding: 8px 12px;
+      margin-bottom: 16px;
+      background: #fafbfc;
+    }
+    #kunden_list li, #artikel_list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    #kunden_list button, #artikel_list button {
+      background: none;
+      border: none;
+      padding: 0;
+      margin-left: 6px;
+      cursor: pointer;
+      font-size: 18px;
+    }
+    #kunden_list button:hover, #artikel_list button:hover {
+      filter: brightness(0.8);
+    }
+    #iban_input {
+      font-family: monospace;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <img src="logo.png" alt="Logo NG72">
+      <div class="absender">
+        <strong>Noël Guyaz</strong><br>
+        Bellacherstrasse 4a<br>
+        2545 Selzach
+      </div>
+    </div>
+    <h1>Rechnung erstellen</h1>
+    <div class="row">
+      <div class="col">
+        <h2>Kunden</h2>
+        <ul id="kunden_list"></ul>
+        <textarea id="kunde_input" rows="3" placeholder="Neuer Kunde (mehrzeilig, z.B. Name&#10;Adresse&#10;PLZ Ort)"></textarea>
+        <button id="kunde_save">Kunde speichern</button>
+      </div>
+      <div class="col">
+        <h2>Artikel</h2>
+        <ul id="artikel_list"></ul>
+        <input id="art_name" type="text" placeholder="Bezeichnung">
+        <input id="art_preis" type="number" placeholder="Preis (CHF)" step="0.01" min="0">
+        <button id="art_save">Artikel speichern</button>
+      </div>
+    </div>
+
+    <hr style="margin:28px 0 18px 0;">
+
+    <h2>Rechnungsdaten</h2>
+    <div class="row">
+      <div class="col">
+        <label for="iban_input">IBAN (für QR-Rechnung):</label>
+        <input id="iban_input" type="text" placeholder="CH..." style="font-family: monospace;">
+        <button id="iban_save" style="background: #1b5e20;">IBAN speichern</button>
+      </div>
+      <div class="col">
+        <label for="empfaenger">Empfänger auswählen:</label>
+        <select id="empfaenger"></select>
+      </div>
+      <div class="col">
+        <label for="rechnr">Rechnungsnummer:</label>
+        <input id="rechnr" type="text">
+      </div>
+      <div class="col">
+        <label for="frist">Zahlungsfrist (Tage):</label>
+        <input id="frist" type="number" min="1" value="30">
+      </div>
+    </div>
+
+    <h2>Rechnungspositionen</h2>
+    <div class="row" style="align-items: flex-end;">
+      <div class="col">
+        <label for="artikel_select">Artikel:</label>
+        <select id="artikel_select"></select>
+      </div>
+      <div class="col">
+        <label for="menge">Menge:</label>
+        <input id="menge" type="number" min="1" value="1">
+      </div>
+      <div class="col" style="flex:0 0 auto;">
+        <button id="add_pos">+ Position</button>
+      </div>
+    </div>
+    <div id="pos_area"></div>
+
+    <h2>Fusszeile (Zahlungsinfo, Kontakt, etc.)</h2>
+    <textarea id="fusszeile" rows="2"></textarea>
+
+    <button id="makepdf" style="margin-top:18px;font-size:1.14em;">PDF erstellen &amp; herunterladen</button>
+    <span id="status"></span>
+  </div>
+  <!-- Unsichtbare Bilder für PDF-Export -->
+  <img id="logoimg" src="logo.png" style="display:none;">
+  <canvas id="qrcanvas" style="display:none;"></canvas>
+  <script src="app.js"></script>
+</body>
+</html>
