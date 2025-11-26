@@ -927,15 +927,50 @@ window.addEventListener("beforeunload", () => {
   if (rechnr) ls.setItem("ng_last_rechnr", rechnr);
 });
 
+// === iOS Standalone-Modus Erkennung
+const isIOSStandalone = window.navigator.standalone === true || 
+  window.matchMedia('(display-mode: standalone)').matches;
+if (isIOSStandalone) {
+  console.log('📱 iOS Standalone-Modus erkannt');
+  // Füge Klasse zum Body hinzu für eventuelle CSS-Anpassungen
+  document.body.classList.add('ios-standalone');
+}
+
 // === Service Worker Registrierung für PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
+    // Verwende relativen Pfad für bessere iOS-Kompatibilität
+    const swPath = './sw.js';
+    navigator.serviceWorker.register(swPath, { scope: './' })
       .then((registration) => {
         console.log('✅ Service Worker registriert:', registration.scope);
+        // Prüfe auf Updates
+        registration.addEventListener('updatefound', () => {
+          const newWorker = registration.installing;
+          newWorker.addEventListener('statechange', () => {
+            if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+              console.log('🔄 Neuer Service Worker verfügbar');
+            }
+          });
+        });
       })
       .catch((error) => {
         console.log('❌ Service Worker Registrierung fehlgeschlagen:', error);
+        // App funktioniert auch ohne Service Worker
+        if (isIOSStandalone) {
+          console.log('ℹ️ App läuft im iOS Standalone-Modus ohne Service Worker');
+        }
       });
+    
+    // Prüfe auf Service Worker Updates
+    if (navigator.serviceWorker.controller) {
+      navigator.serviceWorker.controller.addEventListener('statechange', () => {
+        if (navigator.serviceWorker.controller.state === 'redundant') {
+          console.log('⚠️ Service Worker wurde redundant, Seite neu laden empfohlen');
+        }
+      });
+    }
   });
+} else if (isIOSStandalone) {
+  console.log('ℹ️ Service Worker nicht unterstützt, aber App läuft im Standalone-Modus');
 }
