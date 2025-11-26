@@ -1,5 +1,5 @@
 // Service Worker für Rechnung NG72
-const CACHE_NAME = 'rechnung-ng72-v2';
+const CACHE_NAME = 'rechnung-ng72-v3';
 const urlsToCache = [
   './',
   './index.html',
@@ -7,8 +7,9 @@ const urlsToCache = [
   './qrcode.min.js',
   './logo.png',
   './manifest.json',
-  './icon-192.png',
-  './icon-512.png',
+  './assets/icon-192.png',
+  './assets/icon-512.png',
+  './assets/appicon-1024.png',
   'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js'
 ];
 

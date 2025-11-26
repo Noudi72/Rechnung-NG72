@@ -5,6 +5,23 @@
   <title>Rechnung NG72 Generator</title>
   <meta name="viewport" content="width=device-width,initial-scale=1">
   
+  <!-- Base Path für GitHub Pages -->
+  <script>
+    // Automatische Base-Path Erkennung für GitHub Pages
+    (function() {
+      const path = window.location.pathname;
+      const repoMatch = path.match(/^\/([^\/]+)\//);
+      if (repoMatch && repoMatch[1] !== '') {
+        const basePath = '/' + repoMatch[1] + '/';
+        if (!document.querySelector('base')) {
+          const base = document.createElement('base');
+          base.href = basePath;
+          document.head.insertBefore(base, document.head.firstChild);
+        }
+      }
+    })();
+  </script>
+  
   <!-- PWA Meta Tags -->
   <meta name="theme-color" content="#950019">
   <meta name="description" content="Rechnungsgenerator mit QR-Rechnung Support">
@@ -13,13 +30,55 @@
   <meta name="apple-mobile-web-app-title" content="Rechnung NG72">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="format-detection" content="telephone=no">
-  <link rel="apple-touch-icon" href="icon-192.png">
-  <link rel="apple-touch-icon" sizes="192x192" href="icon-192.png">
-  <link rel="apple-touch-icon" sizes="512x512" href="icon-512.png">
-  <link rel="apple-touch-startup-image" href="icon-512.png">
+  <link rel="apple-touch-icon" href="assets/appicon-1024.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="assets/appicon-1024.png">
+  <link rel="apple-touch-icon" sizes="192x192" href="assets/icon-192.png">
+  <link rel="apple-touch-icon" sizes="512x512" href="assets/icon-512.png">
+  <link rel="apple-touch-icon" sizes="1024x1024" href="assets/appicon-1024.png">
+  <link rel="apple-touch-startup-image" href="assets/appicon-1024.png">
   
-  <!-- Manifest -->
-  <link rel="manifest" href="manifest.json">
+  <!-- Manifest (wird dynamisch generiert für Base-Path Support) -->
+  <link rel="manifest" href="manifest.json" id="manifest-link">
+  <script>
+    // Dynamisches Manifest für GitHub Pages Base-Path
+    (function() {
+      const path = window.location.pathname;
+      let basePath = './';
+      const repoMatch = path.match(/^\/([^\/]+)\//);
+      if (repoMatch && repoMatch[1] !== '' && !path.endsWith('/index.html')) {
+        basePath = '/' + repoMatch[1] + '/';
+      }
+      
+      // Lade Manifest und passe Pfade an
+      fetch(basePath + 'manifest.json')
+        .then(response => response.json())
+        .then(manifest => {
+          // Passe Icon-Pfade an
+          if (manifest.icons) {
+            manifest.icons.forEach(icon => {
+              if (!icon.src.startsWith('http') && !icon.src.startsWith('/')) {
+                icon.src = basePath + icon.src;
+              }
+            });
+          }
+          // Passe start_url an
+          if (manifest.start_url && !manifest.start_url.startsWith('http') && !manifest.start_url.startsWith('/')) {
+            manifest.start_url = basePath + manifest.start_url.replace('./', '');
+          }
+          
+          // Erstelle Blob URL für Manifest
+          const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+          const manifestUrl = URL.createObjectURL(manifestBlob);
+          const manifestLink = document.getElementById('manifest-link');
+          if (manifestLink) {
+            manifestLink.href = manifestUrl;
+          }
+        })
+        .catch(err => {
+          console.warn('Manifest konnte nicht geladen werden, verwende Standard:', err);
+        });
+    })();
+  </script>
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="qrcode.min.js"></script>

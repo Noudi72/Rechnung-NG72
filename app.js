@@ -936,12 +936,27 @@ if (isIOSStandalone) {
   document.body.classList.add('ios-standalone');
 }
 
+// === Base Path für GitHub Pages ermitteln
+function getBasePath() {
+  const path = window.location.pathname;
+  // Prüfe ob wir auf GitHub Pages sind (z.B. /Rechnung-NG72/)
+  const repoMatch = path.match(/^\/([^\/]+)\//);
+  if (repoMatch && repoMatch[1] !== '' && !path.startsWith('/index.html')) {
+    return '/' + repoMatch[1] + '/';
+  }
+  return './';
+}
+
+const BASE_PATH = getBasePath();
+console.log('📍 Base Path:', BASE_PATH);
+
 // === Service Worker Registrierung für PWA
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
-    // Verwende relativen Pfad für bessere iOS-Kompatibilität
-    const swPath = './sw.js';
-    navigator.serviceWorker.register(swPath, { scope: './' })
+    // Verwende Base-Path für Service Worker
+    const swPath = BASE_PATH + 'sw.js';
+    const swScope = BASE_PATH;
+    navigator.serviceWorker.register(swPath, { scope: swScope })
       .then((registration) => {
         console.log('✅ Service Worker registriert:', registration.scope);
         // Prüfe auf Updates
