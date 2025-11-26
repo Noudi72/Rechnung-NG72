@@ -926,3 +926,16 @@ window.addEventListener("beforeunload", () => {
   const rechnr = $("#rechnr")?.value;
   if (rechnr) ls.setItem("ng_last_rechnr", rechnr);
 });
+
+// === Service Worker Registrierung für PWA
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then((registration) => {
+        console.log('✅ Service Worker registriert:', registration.scope);
+      })
+      .catch((error) => {
+        console.log('❌ Service Worker Registrierung fehlgeschlagen:', error);
+      });
+  });
+}
